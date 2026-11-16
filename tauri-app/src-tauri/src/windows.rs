@@ -128,7 +128,6 @@ html,body{{margin:0;padding:0;width:100%;height:100%;overflow:hidden;pointer-eve
         .position(0.0, 0.0)
         .decorations(false)
         .resizable(false)
-        .movable(false)
         .transparent(true)
         .always_on_top(true)
         .skip_taskbar(true)
@@ -150,7 +149,7 @@ html,body{{margin:0;padding:0;width:100%;height:100%;overflow:hidden;pointer-eve
 }
 
 fn primary_size(app: &AppHandle) -> (f64, f64) {
-    if let Some(m) = app.primary_monitor() {
+    if let Ok(Some(m)) = app.primary_monitor() {
         let s = m.size();
         return (s.width as f64, s.height as f64);
     }

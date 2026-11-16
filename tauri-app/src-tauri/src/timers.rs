@@ -42,8 +42,12 @@ impl Shared {
     }
 }
 
+pub fn shared_of(app: &AppHandle) -> Arc<Shared> {
+    app.state::<Arc<Shared>>().inner().clone()
+}
+
 pub fn open_break(app: &AppHandle, reason: &str) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     let s = shared.settings.lock().unwrap().clone();
 
     if windows::break_open(app) {
@@ -81,7 +85,7 @@ pub fn open_break(app: &AppHandle, reason: &str) {
 }
 
 pub fn close_break(app: &AppHandle) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     let reason = *shared.timer.active_reason.lock().unwrap();
     shared.timer.running.store(false, Ordering::SeqCst);
     *shared.timer.active_reason.lock().unwrap() = Reason::None;
@@ -98,7 +102,7 @@ pub fn close_break(app: &AppHandle) {
 }
 
 pub fn delay_break(app: &AppHandle, minutes: u32) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     {
         let mut s = shared.settings.lock().unwrap();
         let interval = s.break_interval_minutes.max(1);
@@ -110,7 +114,7 @@ pub fn delay_break(app: &AppHandle, minutes: u32) {
 }
 
 pub fn skip_break(app: &AppHandle) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     {
         let s = shared.settings.lock().unwrap();
         if !s.enable_skipping {
@@ -126,7 +130,7 @@ pub fn skip_break(app: &AppHandle) {
 }
 
 pub fn apply_all(app: &AppHandle) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     let s = shared.settings.lock().unwrap().clone();
     let _ = settings::save(&s);
     windows::apply_effects(app, &s);
@@ -140,7 +144,7 @@ pub fn apply_all(app: &AppHandle) {
 }
 
 pub fn schedule_now(app: &AppHandle) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     let s = shared.settings.lock().unwrap().clone();
     let now = now_ms();
 
@@ -169,7 +173,7 @@ pub fn schedule_now(app: &AppHandle) {
 pub fn spawn_ticker(app: AppHandle) {
     std::thread::spawn(move || loop {
         std::thread::sleep(Duration::from_secs(1));
-        let shared = app.state::<Arc<Shared>>();
+        let shared = shared_of(&app);
         if shared.timer.running.load(Ordering::SeqCst) && windows::break_open(&app) {
             let rem = shared
                 .timer
@@ -189,7 +193,7 @@ pub fn spawn_ticker(app: AppHandle) {
 }
 
 pub fn reset_timers_idle(app: &AppHandle) {
-    let shared = app.state::<Arc<Shared>>();
+    let shared = shared_of(app);
     if let Ok(mut s) = shared.settings.lock() {
         s.last_break_at = now_ms();
         s.last_micro_at = now_ms();

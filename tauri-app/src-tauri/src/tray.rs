@@ -1,8 +1,11 @@
 use crate::timers::{self, Shared};
-use std::sync::Arc;
 use tauri::menu::{Menu, MenuItem, PredefinedMenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle, Manager, Wry};
+use tauri::{AppHandle, Manager};
+
+fn shared_of(app: &AppHandle) -> std::sync::Arc<Shared> {
+    app.state::<std::sync::Arc<Shared>>().inner().clone()
+}
 
 pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, "open", "Open Eye Saver", true, None::<&str>)?;
@@ -20,9 +23,8 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
         &[&open, &sep1, &breaks, &micro, &blue, &sep2, &take, &sep3, &quit],
     )?;
 
-    // Initial labels from settings
     {
-        let shared = app.state::<Arc<Shared>>();
+        let shared = shared_of(app);
         let s = shared.settings.lock().unwrap().clone();
         let _ = breaks.set_text(if s.breaks_enabled {
             "Breaks: On"
@@ -53,15 +55,15 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
             "open" => show_main(app),
             "breaks" => {
                 {
-                    let shared = app.state::<Arc<Shared>>();
+                    let shared = shared_of(app);
                     if let Ok(mut s) = shared.settings.lock() {
                         s.breaks_enabled = !s.breaks_enabled;
                         let _ = crate::settings::save(&s);
                     }
                 }
                 timers::apply_all(app);
-                let s = app.state::<Arc<Shared>>();
-                let st = s.settings.lock().unwrap();
+                let shared = shared_of(app);
+                let st = shared.settings.lock().unwrap();
                 let _ = breaks_c.set_text(if st.breaks_enabled {
                     "Breaks: On"
                 } else {
@@ -70,15 +72,15 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
             }
             "micro" => {
                 {
-                    let shared = app.state::<Arc<Shared>>();
+                    let shared = shared_of(app);
                     if let Ok(mut s) = shared.settings.lock() {
                         s.micro_pauses_enabled = !s.micro_pauses_enabled;
                         let _ = crate::settings::save(&s);
                     }
                 }
                 timers::apply_all(app);
-                let s = app.state::<Arc<Shared>>();
-                let st = s.settings.lock().unwrap();
+                let shared = shared_of(app);
+                let st = shared.settings.lock().unwrap();
                 let _ = micro_c.set_text(if st.micro_pauses_enabled {
                     "Micro pauses: On"
                 } else {
@@ -87,15 +89,15 @@ pub fn setup_tray(app: &AppHandle) -> tauri::Result<()> {
             }
             "blue" => {
                 {
-                    let shared = app.state::<Arc<Shared>>();
+                    let shared = shared_of(app);
                     if let Ok(mut s) = shared.settings.lock() {
                         s.blue_filter_enabled = !s.blue_filter_enabled;
                         let _ = crate::settings::save(&s);
                     }
                 }
                 timers::apply_all(app);
-                let s = app.state::<Arc<Shared>>();
-                let st = s.settings.lock().unwrap();
+                let shared = shared_of(app);
+                let st = shared.settings.lock().unwrap();
                 let _ = blue_c.set_text(if st.blue_filter_enabled {
                     "Blue filter: On"
                 } else {
@@ -135,7 +137,3 @@ fn show_main(app: &AppHandle) {
         let _ = w.set_focus();
     }
 }
-
-// silence unused type import if Wry not needed
-#[allow(dead_code)]
-type _Wry = Wry;

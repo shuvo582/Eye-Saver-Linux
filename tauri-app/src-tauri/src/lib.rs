@@ -56,9 +56,9 @@ pub fn run() {
 
             // Sync idle flags from settings
             {
-                let shared = app.state::<Arc<Shared>>();
+                let shared = app.state::<Arc<Shared>>().inner().clone();
                 let s = shared.settings.lock().unwrap().clone();
-                let idle = app.state::<IdleFlags>();
+                let idle = app.state::<IdleFlags>().inner();
                 idle.set_reset(s.reset_timers_after_idle);
                 idle.set_threshold(s.idle_reset_minutes);
             }
@@ -70,7 +70,7 @@ pub fn run() {
             let h2 = handle.clone();
             std::thread::spawn(move || loop {
                 std::thread::sleep(std::time::Duration::from_secs(30));
-                let idle = h2.state::<IdleFlags>();
+                let idle = h2.state::<IdleFlags>().inner();
                 if !idle.load_reset() {
                     continue;
                 }
