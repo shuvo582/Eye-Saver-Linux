@@ -1,0 +1,15 @@
+# Original Windows installer (binary, keep local)
+Eye_Saver-setup-2.48.exe
+
+# Electron / build
+linux-app/node_modules/
+linux-app/dist/
+linux-app/out/
+
+# Analysis extracts
+/tmp/
+*.backup
+*.rea.backup
+
+# OS
+.DS_Store

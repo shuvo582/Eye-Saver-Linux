@@ -1,0 +1,48 @@
+{
+  "name": "eye-saver-linux",
+  "productName": "Eye Saver",
+  "version": "2.48.0",
+  "description": "Linux remake of Eye Saver — break reminders, micro pauses, blue filter, and screen effects",
+  "homepage": "https://github.com/shuvo582/Eye-Saver-Linux",
+  "main": "src/main.js",
+  "author": "Eye Saver Linux Contributors",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --linux",
+    "dist:AppImage": "electron-builder --linux AppImage",
+    "dist:deb": "electron-builder --linux deb",
+    "dist:all": "electron-builder --linux AppImage deb"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.leosoft.eyesaver.linux",
+    "productName": "Eye Saver",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "maintainer": "Eye Saver Linux Contributors",
+      "synopsis": "Eye break timer, micro pauses, blue light filter",
+      "desktop": {
+        "Name": "Eye Saver",
+        "Comment": "Remind yourself to rest your eyes",
+        "Categories": "Utility;"
+      }
+    }
+  }
+}
