@@ -39,13 +39,15 @@
         "AppImage",
         "deb"
       ],
+      "icon": "assets/icon.png",
       "category": "Utility",
       "maintainer": "Eye Saver Linux Contributors",
       "synopsis": "Eye break timer, micro pauses, blue light filter",
       "desktop": {
         "Name": "Eye Saver",
         "Comment": "Remind yourself to rest your eyes",
-        "Categories": "Utility;"
+        "Categories": "Utility;",
+        "Icon": "eye-saver-linux"
       }
     }
   }

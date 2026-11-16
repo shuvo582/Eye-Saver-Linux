@@ -86,6 +86,18 @@ function pickReminder() {
   return options[Math.floor(Math.random() * options.length)];
 }
 
+function appIconPath() {
+  return path.join(__dirname, '..', 'assets', 'icon.png');
+}
+
+function appIcon() {
+  try {
+    const img = nativeImage.createFromPath(appIconPath());
+    if (!img.isEmpty()) return img;
+  } catch (_) { /* fall through */ }
+  return null;
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 920,
@@ -93,6 +105,7 @@ function createWindow() {
     minWidth: 720,
     minHeight: 520,
     title: 'Eye Saver',
+    icon: appIcon(),
     backgroundColor: '#0F172A',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -132,6 +145,7 @@ function createBreakWindow(reason = 'break') {
     resizable: false,
     movable: false,
     fullscreen: true,
+    icon: appIcon(),
     alwaysOnTop: true,
     skipTaskbar: true,
     backgroundColor: '#000000',
@@ -348,33 +362,32 @@ function applyAll() {
 }
 
 function createTray() {
-  // 16x16 simple eye icon as data URL PNG (blue circle)
-  const iconPng = Buffer.from(
-    'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAmklEQVR42mNgGAWjYBSMglEwCkYB//8HFPD//x8Y////Hxj///8fGf///x8YGBgYgP///w8M////Hxj///8fGf///x8YGBgYgP///w8M////Hxj///8fGf///x8YGBgYgP///w8M////Hxj///8fGf///x8YGBgYgP///w8M////Hxj///8fGf///x8YGBgYgP///w8M//8HFPD//x8Y////Hxj///8fGf///x8YGBgYgP///w8M////Hxj///8fGf///x8YGBgYgP///w8M',
-    'base64'
-  );
-  // Use a generated simple icon
-  const size = 22;
-  const buf = Buffer.alloc(size * size * 4);
-  for (let i = 0; i < size * size; i++) {
-    const x = i % size;
-    const y = Math.floor(i / size);
-    const dx = x - size / 2;
-    const dy = y - size / 2;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const inEye = dist < size * 0.45;
-    const inPupil = dist < size * 0.18;
-    const o = i * 4;
-    if (inPupil) {
-      buf[o] = 15; buf[o + 1] = 23; buf[o + 2] = 42; buf[o + 3] = 255;
-    } else if (inEye) {
-      buf[o] = 6; buf[o + 1] = 182; buf[o + 2] = 212; buf[o + 3] = 255;
-    } else {
-      buf[o] = 0; buf[o + 1] = 0; buf[o + 2] = 0; buf[o + 3] = 0;
+  const image = appIcon();
+  if (!image) {
+    // Fallback: procedural 16x16 blue-circle icon
+    const size = 22;
+    const buf = Buffer.alloc(size * size * 4);
+    for (let i = 0; i < size * size; i++) {
+      const x = i % size;
+      const y = Math.floor(i / size);
+      const dx = x - size / 2;
+      const dy = y - size / 2;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const inEye = dist < size * 0.45;
+      const inPupil = dist < size * 0.18;
+      const o = i * 4;
+      if (inPupil) {
+        buf[o] = 15; buf[o + 1] = 23; buf[o + 2] = 42; buf[o + 3] = 255;
+      } else if (inEye) {
+        buf[o] = 6; buf[o + 1] = 182; buf[o + 2] = 212; buf[o + 3] = 255;
+      } else {
+        buf[o] = 0; buf[o + 1] = 0; buf[o + 2] = 0; buf[o + 3] = 0;
+      }
     }
+    tray = new Tray(nativeImage.createFromBuffer(buf, { width: size, height: size }));
+  } else {
+    tray = new Tray(image.resize({ width: 22, height: 22 }));
   }
-  const image = nativeImage.createFromBuffer(buf, { width: size, height: size });
-  tray = new Tray(image);
   tray.setToolTip('Eye Saver');
   tray.setContextMenu(buildTrayMenu());
   tray.on('click', () => {
