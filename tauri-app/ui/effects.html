@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Effects</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; pointer-events: none; }
+    #fx { position: fixed; inset: 0; }
+    #fx2 { position: fixed; inset: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <div id="fx"></div>
+  <div id="fx2"></div>
+  <script>
+    // Read css/backdrop from query string
+    const p = new URLSearchParams(location.search);
+    const css = p.get('css') || '';
+    const backdrop = p.get('backdrop') || 'none';
+    document.getElementById('fx').style.cssText = css;
+    const fx2 = document.getElementById('fx2');
+    fx2.style.backdropFilter = backdrop;
+    fx2.style.webkitBackdropFilter = backdrop;
+  </script>
+</body>
+</html>

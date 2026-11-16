@@ -19,3 +19,9 @@ dist-artifacts/
 
 # OS
 .DS_Store
+
+# Tauri / Rust
+tauri-app/src-tauri/target/
+dist/
+*.AppImage
+*.deb

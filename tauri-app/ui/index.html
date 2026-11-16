@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+  <title>Eye Saver</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">👁</div>
+      <div>
+        <h1>Eye Saver</h1>
+        <p class="sub">Linux remake · breaks, micro pauses, blue filter &amp; screen effects</p>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="breaks">Breaks</button>
+      <button class="tab" data-tab="effects">Screen</button>
+      <button class="tab" data-tab="reminders">Reminders</button>
+      <button class="tab" data-tab="system">System</button>
+    </nav>
+
+    <main>
+      <section id="tab-breaks" class="panel active">
+        <label class="row switch">
+          <input type="checkbox" id="breaksEnabled" />
+          <span>Enable breaks</span>
+        </label>
+        <label class="row">
+          <span>Break interval (minutes)</span>
+          <input type="number" id="breakIntervalMinutes" min="1" max="180" />
+        </label>
+        <label class="row">
+          <span>Break duration (minutes)</span>
+          <input type="number" id="breakDurationMinutes" min="1" max="60" />
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="enableSkipping" />
+          <span>Allow skip / delay</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="microPausesEnabled" />
+          <span>Enable micro pauses</span>
+        </label>
+        <label class="row">
+          <span>Micro pause interval (minutes)</span>
+          <input type="number" id="microPauseIntervalMinutes" min="1" max="60" />
+        </label>
+        <label class="row">
+          <span>Micro pause length (seconds)</span>
+          <input type="number" id="microPauseDurationSeconds" min="5" max="120" />
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="microPausesSound" />
+          <span>Sound for micro pauses</span>
+        </label>
+        <div class="actions">
+          <button id="btnPreviewBreak" class="primary">Preview break</button>
+          <button id="btnPreviewMicro">Preview micro pause</button>
+        </div>
+      </section>
+
+      <section id="tab-effects" class="panel">
+        <label class="row switch">
+          <input type="checkbox" id="blueFilterEnabled" />
+          <span>Blue filter (color temperature)</span>
+        </label>
+        <label class="row">
+          <span>Blue filter intensity</span>
+          <input type="range" id="blueFilterIntensity" min="5" max="70" />
+          <em id="blueFilterVal">40%</em>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="overlayEnabled" />
+          <span>Dark overlay</span>
+        </label>
+        <label class="row">
+          <span>Overlay opacity</span>
+          <input type="range" id="overlayOpacity" min="0" max="80" />
+          <em id="overlayOpacityVal">25%</em>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="grayscaleEnabled" />
+          <span>Grayscale effect</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="invertEnabled" />
+          <span>Invert effect</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="autoSetMaxBrightness" />
+          <span>Auto set max brightness (laptops)</span>
+        </label>
+      </section>
+
+      <section id="tab-reminders" class="panel">
+        <label class="row switch">
+          <input type="checkbox" id="reminderStretch" />
+          <span>Stretch reminder — “Sitting too long is not healthy…”</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="reminderWater" />
+          <span>Water reminder — “Drink more water!”</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="resetTimersAfterIdle" />
+          <span>Reset timers after idle time</span>
+        </label>
+        <label class="row">
+          <span>Idle threshold (minutes)</span>
+          <input type="number" id="idleResetMinutes" min="1" max="120" />
+        </label>
+      </section>
+
+      <section id="tab-system" class="panel">
+        <label class="row switch">
+          <input type="checkbox" id="preventSleeping" />
+          <span>Prevent computer from sleeping</span>
+        </label>
+        <label class="row switch">
+          <input type="checkbox" id="autostart" />
+          <span>Start with system</span>
+        </label>
+        <div class="actions">
+          <button id="btnReset" class="danger">Reset settings</button>
+          <button id="btnSave" class="primary">Save</button>
+        </div>
+        <p class="note">Settings are stored in <code>~/.config/eye-saver-linux/settings.json</code></p>
+      </section>
+    </main>
+
+    <footer>
+      <span id="status">Loading…</span>
+    </footer>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
