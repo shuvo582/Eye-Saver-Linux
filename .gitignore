@@ -1,10 +1,16 @@
 # Original Windows installer (binary, keep local)
 Eye_Saver-setup-2.48.exe
 
+# Local session notes (not for GitHub)
+CONTEXT_HANDOFF.md
+readme2.txt
+Readme.md
+
 # Electron / build
 linux-app/node_modules/
 linux-app/dist/
 linux-app/out/
+dist-artifacts/
 
 # Analysis extracts
 /tmp/
