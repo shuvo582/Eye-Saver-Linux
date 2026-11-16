@@ -4,6 +4,10 @@
   "version": "2.48.0",
   "description": "Linux remake of Eye Saver — break reminders, micro pauses, blue filter, and screen effects",
   "homepage": "https://github.com/shuvo582/Eye-Saver-Linux",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuvo582/Eye-Saver-Linux.git"
+  },
   "main": "src/main.js",
   "author": "Eye Saver Linux Contributors",
   "license": "MIT",
